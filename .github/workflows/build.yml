@@ -25,7 +25,7 @@ jobs:
 
       - name: 🛠️ Build
         run: pnpm run build
-        
+
 - name: Install build tools
   run: |
     sudo apt-get update
@@ -34,7 +34,7 @@ jobs:
 - name: Rebuild native dependencies
   run: npm rebuild better-sqlite3
 
- - name: Cache Node.js modules
+- name: Cache Node.js modules
   uses: actions/cache@v3
   with:
     path: ~/.npm
@@ -42,8 +42,8 @@ jobs:
     restore-keys: |
       ${{ runner.os }}-node-
 
- - name: Debug environment
+- name: Debug environment
   run: |
     node -v
     npm -v
-    ls -la node_modules/better-sqlite3/build
+      ls -la node_modules/better-sqlite3/build
