@@ -31,13 +31,19 @@ jobs:
     sudo apt-get update
     sudo apt-get install -y build-essential python3
 
-    - name: Rebuild native dependencies
+- name: Rebuild native dependencies
   run: npm rebuild better-sqlite3
 
-  - name: Cache Node.js modules
+ - name: Cache Node.js modules
   uses: actions/cache@v3
   with:
     path: ~/.npm
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
       ${{ runner.os }}-node-
+
+ - name: Debug environment
+  run: |
+    node -v
+    npm -v
+    ls -la node_modules/better-sqlite3/build
