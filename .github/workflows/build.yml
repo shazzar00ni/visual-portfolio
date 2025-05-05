@@ -25,3 +25,19 @@ jobs:
 
       - name: 🛠️ Build
         run: pnpm run build
+        
+- name: Install build tools
+  run: |
+    sudo apt-get update
+    sudo apt-get install -y build-essential python3
+
+    - name: Rebuild native dependencies
+  run: npm rebuild better-sqlite3
+
+  - name: Cache Node.js modules
+  uses: actions/cache@v3
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      ${{ runner.os }}-node-
