@@ -48,3 +48,50 @@ jobs:
           npm -v
           ls -la node_modules/better-sqlite3/build
       
+name: Check if packages can be built
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+          run_install: false
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 make g++ sqlite3 libsqlite3-dev
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Rebuild better-sqlite3
+        run: |
+          cd node_modules/better-sqlite3
+          npm run build-release
+        env:
+          CFLAGS: "-DSQLITE_ENABLE_UPDATE_DELETE_LIMIT=1"
+
+      - name: 🛠️ Build
+        run: pnpm run build
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
